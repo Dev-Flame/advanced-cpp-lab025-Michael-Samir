@@ -69,9 +69,11 @@ private:
 
     std::unique_ptr<TrieNode> root;
 
+    const TrieNode* findNode(const std::string& prefix) const;
+
     // Helper for recursive prefix collection.
     void collectWords(
         const TrieNode* node,
-        const std::string& current,
+        std::string& current,
         std::vector<std::string>& results) const;
 };

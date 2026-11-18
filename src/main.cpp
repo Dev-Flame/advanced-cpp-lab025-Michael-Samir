@@ -3,25 +3,22 @@
 #include <iostream>
 
 int main() {
-    std::cout << "=== Lab 025: Huffman Coding, Greedy Method, and Tries ===\n\n";
+    const std::string text = "banana";
+    std::unordered_map<char, std::size_t> frequencies;
+    for (char character : text) {
+        ++frequencies[character];
+    }
+    const auto tree = buildHuffmanTree(frequencies);
+    const auto encoded = huffmanEncode(text, generateHuffmanCodes(tree));
+    std::cout << "Encoded: " << encoded << '\n';
+    std::cout << "Decoded: " << huffmanDecode(encoded, tree) << '\n';
 
-    std::cout << "Starter repository created.\n\n";
-
-    std::cout << "Implement the TODO functions in:\n";
-    std::cout << "  src/HuffmanTrie.cpp\n\n";
-
-    std::cout << "Huffman Coding:\n";
-    std::cout << "  - buildHuffmanTree()\n";
-    std::cout << "  - generateHuffmanCodes()\n";
-    std::cout << "  - huffmanEncode()\n";
-    std::cout << "  - huffmanDecode()\n\n";
-
-    std::cout << "Trie:\n";
-    std::cout << "  - Trie::insert()\n";
-    std::cout << "  - Trie::contains()\n";
-    std::cout << "  - Trie::startsWith()\n";
-    std::cout << "  - Trie::wordsWithPrefix()\n";
-    std::cout << "  - Trie::collectWords()\n";
-
-    return 0;
+    Trie trie;
+    trie.insert("cat");
+    trie.insert("car");
+    trie.insert("dog");
+    std::cout << "Words starting with ca:\n";
+    for (const auto& word : trie.wordsWithPrefix("ca")) {
+        std::cout << word << '\n';
+    }
 }

@@ -3,6 +3,8 @@
 
 #include "project/HuffmanTrie.hpp"
 
+#include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -156,6 +158,19 @@ TEST_CASE("Huffman handles empty input gracefully") {
     REQUIRE(root == nullptr);
     REQUIRE(codes.empty());
     REQUIRE(huffmanEncode("", codes) == "");
+    REQUIRE(huffmanDecode("", root).empty());
+}
+
+TEST_CASE("Huffman rejects invalid and truncated bit strings") {
+    const auto tree = buildHuffmanTree({{'a', 1}, {'b', 2}, {'c', 5}});
+    const auto codes = generateHuffmanCodes(tree);
+    const auto partial = codes.at('a').substr(0, 1);
+    REQUIRE(codes.at('a').size() == 2);
+    REQUIRE_THROWS_AS(huffmanDecode(partial, tree), std::invalid_argument);
+    REQUIRE_THROWS_AS(huffmanDecode("2", tree), std::invalid_argument);
+    REQUIRE_THROWS_AS(huffmanDecode("1", buildHuffmanTree({{'a', 1}})),
+                      std::invalid_argument);
+    REQUIRE_THROWS_AS(huffmanDecode("0", nullptr), std::invalid_argument);
 }
 
 TEST_CASE("Huffman rejects unknown characters during encoding") {
@@ -172,6 +187,10 @@ TEST_CASE("Huffman rejects unknown characters during encoding") {
 
 TEST_CASE("Trie handles empty string and repeated inserts") {
     Trie trie;
+
+    REQUIRE_FALSE(trie.contains(""));
+    REQUIRE_FALSE(trie.startsWith(""));
+    REQUIRE(trie.wordsWithPrefix("").empty());
 
     trie.insert("");
     REQUIRE(trie.contains(""));
